@@ -33,6 +33,62 @@ def get_order_status(order_id):
 
 
 
+# Function to get the next available order_id
+def get_next_order_id():
+    cursor = cnx.cursor()
+
+    # Executing the SQL query to get the next available order_id
+    query = "SELECT MAX(order_id) FROM orders"
+    cursor.execute(query)
+
+    # Fetching the result
+    result = cursor.fetchone()[0]
+
+    # Closing the cursor
+    cursor.close()
+
+    # Returning the next available order_id
+    if result is None:
+        return 1
+    else:
+        return result + 1
+
+
+# Function to insert a record into the order_tracking table
+def insert_order_tracking(order_id, status):
+    cursor = cnx.cursor()
+
+    # Inserting the record into the order_tracking table
+    insert_query = "INSERT INTO order_tracking (order_id, status) VALUES (%s, %s)"
+    cursor.execute(insert_query, (order_id, status))
+
+    # Committing the changes
+    cnx.commit()
+
+    # Closing the cursor
+    cursor.close()
+
+def get_total_order_price(order_id):
+    cursor = cnx.cursor()
+
+    # Executing the SQL query to get the total order price
+    query = f"SELECT get_total_order_price({order_id})"
+    cursor.execute(query)
+
+    # Fetching the result
+    result = cursor.fetchone()[0]
+
+    # Closing the cursor
+    cursor.close()
+
+    return result
+
+
+
+
+
+
+
 
 # Function to call the MySQL stored procedure and insert an order item
 def insert_order_item(food_item, quantity, order_id):
@@ -66,55 +122,6 @@ def insert_order_item(food_item, quantity, order_id):
         cnx.rollback()
 
         return -1
-
-# Function to insert a record into the order_tracking table
-def insert_order_tracking(order_id, status):
-    cursor = cnx.cursor()
-
-    # Inserting the record into the order_tracking table
-    insert_query = "INSERT INTO order_tracking (order_id, status) VALUES (%s, %s)"
-    cursor.execute(insert_query, (order_id, status))
-
-    # Committing the changes
-    cnx.commit()
-
-    # Closing the cursor
-    cursor.close()
-
-def get_total_order_price(order_id):
-    cursor = cnx.cursor()
-
-    # Executing the SQL query to get the total order price
-    query = f"SELECT get_total_order_price({order_id})"
-    cursor.execute(query)
-
-    # Fetching the result
-    result = cursor.fetchone()[0]
-
-    # Closing the cursor
-    cursor.close()
-
-    return result
-
-# Function to get the next available order_id
-def get_next_order_id():
-    cursor = cnx.cursor()
-
-    # Executing the SQL query to get the next available order_id
-    query = "SELECT MAX(order_id) FROM orders"
-    cursor.execute(query)
-
-    # Fetching the result
-    result = cursor.fetchone()[0]
-
-    # Closing the cursor
-    cursor.close()
-
-    # Returning the next available order_id
-    if result is None:
-        return 1
-    else:
-        return result + 1
 
 
 
